@@ -14,66 +14,90 @@ import {
 } from 'lucide-react';
 import { bankingData, formatDate, getStatusColor } from '../data/bankMockData';
 
-const ClientCard = ({ client, onEdit, onDelete, onView }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-    <div className="flex items-start justify-between mb-4">
-      <div className="flex items-center space-x-3">
-        <img
-          src={client.avatar}
-          alt={`${client.prenom} ${client.nom}`}
-          className="w-12 h-12 rounded-full"
-        />
-        <div>
-          <h3 className="font-semibold text-gray-900">
-            {client.prenom} {client.nom}
-          </h3>
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(client.statut)}`}>
-            {client.statut}
-          </span>
+const ClientCard = ({ client, onEdit, onDelete, onView }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div 
+      className="bg-gray-800 border border-gray-700 rounded-xl p-6 transition-all duration-500 ease-in-out transform hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20 cursor-pointer group"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="relative">
+            <img
+              src={client.avatar}
+              alt={`${client.prenom} ${client.nom}`}
+              className={`w-12 h-12 rounded-full transition-all duration-500 ${
+                isHovered ? 'scale-110 shadow-xl' : ''
+              }`}
+            />
+            <div className={`absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition-opacity duration-500 -z-10 ${
+              isHovered ? 'opacity-100' : ''
+            }`} />
+          </div>
+          <div>
+            <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors duration-300">
+              {client.prenom} {client.nom}
+            </h3>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-all duration-300 ${
+              client.statut === 'actif' ? 'text-green-300 bg-green-500/20 group-hover:bg-green-500/30' :
+              client.statut === 'inactif' ? 'text-gray-300 bg-gray-500/20 group-hover:bg-gray-500/30' :
+              'text-red-300 bg-red-500/20 group-hover:bg-red-500/30'
+            }`}>
+              {client.statut}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => onView(client)}
+            className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/20 rounded-lg transition-all duration-300 transform hover:scale-110 group/btn"
+          >
+            <Eye className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+          </button>
+          <button
+            onClick={() => onEdit(client)}
+            className="p-2 text-gray-400 hover:text-green-400 hover:bg-green-500/20 rounded-lg transition-all duration-300 transform hover:scale-110 group/btn"
+          >
+            <Edit className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+          </button>
+          <button
+            onClick={() => onDelete(client)}
+            className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/20 rounded-lg transition-all duration-300 transform hover:scale-110 group/btn"
+          >
+            <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform duration-300" />
+          </button>
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={() => onView(client)}
-          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-        >
-          <Eye className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => onEdit(client)}
-          className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-        >
-          <Edit className="w-4 h-4" />
-        </button>
-        <button
-          onClick={() => onDelete(client)}
-          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
 
-    <div className="space-y-2">
-      <div className="flex items-center text-sm text-gray-600">
-        <Mail className="w-4 h-4 mr-2" />
-        <span>{client.email}</span>
+      <div className="space-y-2">
+        <div className="flex items-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+          <Mail className="w-4 h-4 mr-2 group-hover:text-blue-400 transition-colors duration-300" />
+          <span>{client.email}</span>
+        </div>
+        <div className="flex items-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+          <Phone className="w-4 h-4 mr-2 group-hover:text-green-400 transition-colors duration-300" />
+          <span>{client.telephone}</span>
+        </div>
+        <div className="flex items-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+          <MapPin className="w-4 h-4 mr-2 group-hover:text-purple-400 transition-colors duration-300" />
+          <span className="truncate">{client.adresse}</span>
+        </div>
+        <div className="flex items-center text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+          <Calendar className="w-4 h-4 mr-2 group-hover:text-orange-400 transition-colors duration-300" />
+          <span>Client depuis {formatDate(client.dateCreation)}</span>
+        </div>
       </div>
-      <div className="flex items-center text-sm text-gray-600">
-        <Phone className="w-4 h-4 mr-2" />
-        <span>{client.telephone}</span>
-      </div>
-      <div className="flex items-center text-sm text-gray-600">
-        <MapPin className="w-4 h-4 mr-2" />
-        <span className="truncate">{client.adresse}</span>
-      </div>
-      <div className="flex items-center text-sm text-gray-600">
-        <Calendar className="w-4 h-4 mr-2" />
-        <span>Client depuis {formatDate(client.dateCreation)}</span>
-      </div>
+      
+      {/* Glow effect on hover */}
+      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 transition-opacity duration-500 ${
+        isHovered ? 'opacity-100' : ''
+      }`} />
     </div>
-  </div>
-);
+  );
+};
 
 const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
   const [formData, setFormData] = useState(client || {
@@ -95,10 +119,10 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-800 border border-gray-700 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in fade-in slide-in-from-bottom duration-500">
+        <div className="p-6 border-b border-gray-700">
+          <h2 className="text-xl font-semibold text-white">
             {mode === 'create' ? 'Nouveau Client' : 
              mode === 'edit' ? 'Modifier Client' : 'Détails du Client'}
           </h2>
@@ -107,7 +131,7 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Prénom
               </label>
               <input
@@ -115,12 +139,12 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
                 value={formData.prenom || ''}
                 onChange={(e) => setFormData({...formData, prenom: e.target.value})}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Nom
               </label>
               <input
@@ -128,14 +152,14 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
                 value={formData.nom || ''}
                 onChange={(e) => setFormData({...formData, nom: e.target.value})}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Email
             </label>
             <input
@@ -143,13 +167,13 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
               value={formData.email || ''}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               disabled={mode === 'view'}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Téléphone
             </label>
             <input
@@ -157,13 +181,13 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
               value={formData.telephone || ''}
               onChange={(e) => setFormData({...formData, telephone: e.target.value})}
               disabled={mode === 'view'}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Adresse
             </label>
             <textarea
@@ -171,14 +195,14 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
               onChange={(e) => setFormData({...formData, adresse: e.target.value})}
               disabled={mode === 'view'}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+              className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
               required
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Date de naissance
               </label>
               <input
@@ -186,19 +210,19 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
                 value={formData.dateNaissance || ''}
                 onChange={(e) => setFormData({...formData, dateNaissance: e.target.value})}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Statut
               </label>
               <select
                 value={formData.statut || 'actif'}
                 onChange={(e) => setFormData({...formData, statut: e.target.value})}
                 disabled={mode === 'view'}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-800 disabled:text-gray-400 transition-all duration-300"
               >
                 <option value="actif">Actif</option>
                 <option value="inactif">Inactif</option>
@@ -207,18 +231,18 @@ const ClientModal = ({ client, isOpen, onClose, onSave, mode = 'view' }) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-700 transition-all duration-300 hover:scale-105"
             >
               {mode === 'view' ? 'Fermer' : 'Annuler'}
             </button>
             {mode !== 'view' && (
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-lg"
               >
                 {mode === 'create' ? 'Créer' : 'Sauvegarder'}
               </button>
@@ -291,26 +315,26 @@ const ClientManagement = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-gray-900 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-in fade-in slide-in-from-top duration-500">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Clients</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-white mb-2">Gestion des Clients</h1>
+          <p className="text-gray-400">
             {filteredClients.length} client{filteredClients.length !== 1 ? 's' : ''} trouvé{filteredClients.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
           onClick={handleCreateClient}
-          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105 hover:shadow-lg group"
         >
-          <UserPlus className="w-4 h-4" />
+          <UserPlus className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
           <span>Nouveau Client</span>
         </button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 animate-in fade-in slide-in-from-left duration-500 delay-200">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
@@ -318,7 +342,7 @@ const ClientManagement = () => {
             placeholder="Rechercher par nom, prénom ou email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
           />
         </div>
         <div className="flex items-center space-x-2">
@@ -326,7 +350,7 @@ const ClientManagement = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
           >
             <option value="all">Tous les statuts</option>
             <option value="actif">Actif</option>
@@ -338,23 +362,24 @@ const ClientManagement = () => {
 
       {/* Clients Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredClients.map((client) => (
-          <ClientCard
-            key={client.id}
-            client={client}
-            onView={handleViewClient}
-            onEdit={handleEditClient}
-            onDelete={handleDeleteClient}
-          />
+        {filteredClients.map((client, index) => (
+          <div key={client.id} className={`animate-in fade-in slide-in-from-bottom duration-500 delay-${(index % 6 + 1) * 100}`}>
+            <ClientCard
+              client={client}
+              onView={handleViewClient}
+              onEdit={handleEditClient}
+              onDelete={handleDeleteClient}
+            />
+          </div>
         ))}
       </div>
 
       {/* Empty State */}
       {filteredClients.length === 0 && (
-        <div className="text-center py-12">
+        <div className="text-center py-12 animate-in fade-in duration-500">
           <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun client trouvé</h3>
-          <p className="text-gray-600 mb-4">
+          <h3 className="text-lg font-medium text-white mb-2">Aucun client trouvé</h3>
+          <p className="text-gray-400 mb-4">
             {searchTerm || statusFilter !== 'all' 
               ? 'Aucun client ne correspond à vos critères de recherche.'
               : 'Commencez par ajouter votre premier client.'
@@ -362,9 +387,9 @@ const ClientManagement = () => {
           </p>
           <button
             onClick={handleCreateClient}
-            className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105 group"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
             <span>Ajouter un client</span>
           </button>
         </div>
