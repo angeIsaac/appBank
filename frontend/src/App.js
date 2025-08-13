@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./App.css";
+import "./App.css"; 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
@@ -28,7 +28,7 @@ const BankingApp = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-900">
       <Sidebar
         currentPage={currentPage}
         onPageChange={setCurrentPage}
@@ -37,7 +37,7 @@ const BankingApp = () => {
       />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto bg-gray-900">
           {renderCurrentPage()}
         </main>
       </div>
